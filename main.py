@@ -15,4 +15,7 @@ schema = Schema(query=Query)
 app = FastAPI()
 
 # endpoint da web application
-app.mount("/graphql", GraphQLApp(schema=schema))
+app.mount("/graphql", GraphQLApp(
+    schema=schema,
+    graphiql=True
+))
