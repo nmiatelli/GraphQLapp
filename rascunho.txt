@@ -1,0 +1,26 @@
+${{ Postgres.DATABASE_URL }}
+
+
+{
+    jobs{
+        id
+        employerId
+        description
+        {
+            employer{
+                id
+                industry
+            }
+        }
+    }
+ 
+    employers{
+        id
+        industry
+        contactEmail
+        jobs{
+            id
+            description
+        }
+    }
+}
