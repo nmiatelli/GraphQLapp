@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.db.models import Base, Employer, Job
+from app.db.models import Base, Employer, Job, User, JobApplication
 from app.settings.config import DB_URL
-from app.db.data import jobs_data, employers_data
+from app.db.data import jobs_data, employers_data, users_data, applications_data
 
 
 engine = create_engine(DB_URL, echo=True)
@@ -29,6 +29,12 @@ def prepare_database():
 
     for job in jobs_data:
         session.add(Job(**job))
+    
+    for user in users_data:
+        session.add(User(**user))
+    
+    for apl in applications_data:
+        session.add(JobApplication(**apl))
 
     # Persistindo os dados no DB
     session.commit()

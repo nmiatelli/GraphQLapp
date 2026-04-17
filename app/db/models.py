@@ -22,5 +22,31 @@ class Job(Base):
     title = Column(String)
     description = Column(String)
     employer_id = Column(Integer, ForeignKey("employers.id"))
+    
     employer = relationship("Employer", back_populates="jobs", lazy="joined")
+    applications = relationship("JobApplication", back_populates="job", lazy="joined")
+
+class User(Base):
+    __tablename__= "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String)
+    password = Column(String)
+    email = Column(String)
+    role = Column(String)
+    # employer_id = Column(Integer, ForeignKey("employers.id"))
+
+    applications = relationship("JobApplication", back_populates="user", lazy="joined")
+
+
+class JobApplication(Base):
+    __tablename__ = "job_applications"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    job_id = Column(Integer, ForeignKey("jobs.id"))
+
+    # definindo relações
+    user = relationship("User", back_populates="applications", lazy="joined")
+    job = relationship("Job", back_populates="applications", lazy="joined")
 
