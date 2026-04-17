@@ -26,7 +26,7 @@ ${{ Postgres.DATABASE_URL }}
 }
 
 query{
-    job(id: 3){
+    job(id: 2){
         id
         description
         employer{
@@ -34,8 +34,34 @@ query{
             name
             industry
         }
+        applications{
+            user{
+                username
+                email
+            }
+        }
     }
 }
+query{
+    users{
+        id
+        username
+    }
+}
+query{
+    jobApplications{
+        jobId
+        userId
+        job{
+            description
+        }
+        user{
+            username
+            email
+        }
+    }
+}
+
 
 
 
