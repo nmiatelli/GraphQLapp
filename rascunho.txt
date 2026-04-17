@@ -24,3 +24,89 @@ ${{ Postgres.DATABASE_URL }}
         }
     }
 }
+
+query{
+    job(id: 3){
+        id
+        description
+        employer{
+            id
+            name
+            industry
+        }
+    }
+}
+
+
+
+
+mutation{
+    updateJob(
+        jobId: 1,
+        title:"A new updated job title",
+        description:" Fancy new description",
+        employerId: 2
+    ){
+        job{
+            id
+            employerId
+            description
+            title
+            employer{
+                id
+                industry
+            }
+        }
+    }
+}
+
+mutation{
+    deleteJob(id: 2){
+        success
+    }
+}
+
+
+mutation{
+    addEmployer(
+        name: "CME Group",
+        contactEmail: "contact@cmegroup.com",
+        industry: "Financial Services"
+    ) {
+        employer{
+            id
+            name
+            contactEmail
+            industry
+        }
+    }
+}
+
+mutation{
+    updateEmployer(
+        id: 1,
+        contactEmail: "newcontact@metatech.com"
+    ){
+        employer{
+            id
+            name
+            contactEmail
+        }
+    } 
+}
+
+query{
+    employer(id: 2){
+        name
+        industry
+    }
+}
+
+fragment employerFields on EmployerObject{
+  id name contactEmail industry jobs {
+    ...jobFields
+}
+
+fragment jobFields on JobObject{
+    title description employerId
+}

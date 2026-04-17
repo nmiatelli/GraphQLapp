@@ -4,22 +4,25 @@ from starlette_graphene3 import GraphQLApp, make_playground_handler
 from contextlib import asynccontextmanager
 from app.db.database import prepare_database
 from app.gql.gql_queries import Query
+from app.gql.glq_mutations import Mutation
 from app.db.database import Session
 from app.db.models import Employer, Job
 
 
 
 # “GraphQL, quando alguém fizer uma query, olha na classe Query pra saber o que existe”
-schema = Schema(query=Query)
+schema = Schema(query=Query, mutation=Mutation)
 #define o ponto de entrada da API, conecta as queries ao GQL, permite executar consultas
 
 # endpoint da web application
-app = FastAPI()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) :
     prepare_database()
     yield
+
+
+app = FastAPI(lifespan=lifespan)
 
 @app.get("/employers")
 def get_employers():

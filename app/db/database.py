@@ -5,7 +5,7 @@ from app.settings.config import DB_URL
 from app.db.data import jobs_data, employers_data
 
 
-engine = create_engine(DB_URL)
+engine = create_engine(DB_URL, echo=True)
 conn = engine.connect()
 
 # "segura" todos os dados antes de enviar/deletar no banco
@@ -18,8 +18,8 @@ def prepare_database():
     Base.metadata.drop_all(engine)
     # Cria efetivamente as tabelas no banco
     Base.metadata.create_all(engine)
-
     session = Session()
+
 
     for employer in employers_data:
     #create a new instance of employer and add it to the session -> Employer(id=employer.get("id"), name=employer.get("name")..)
