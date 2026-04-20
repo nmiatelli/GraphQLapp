@@ -1,11 +1,13 @@
-import string
-from random import choices
-
 from graphene import Mutation, String, Int, Field, Boolean
 from graphql import GraphQLError
 from app.gql.gql_types import JobObject
 from app.db.database import Session
 from app.db.models import Job, User
+from app.utils import genenrate_token, verify_password
+
+
+
+
 
 class LoginUser(Mutation):
     class Arguments:
@@ -19,10 +21,14 @@ class LoginUser(Mutation):
         session = Session()
         user = session.query(User).filter(User.email == email).first()
 
-        if not user or user.password != password:
-            raise GraphQLError("Invalid email or password") 
+        if not user:
+            raise GraphQLError("A user by that email does not exist") 
 
+        verify_password(user.password_hash, password)
+        
         # gera um uma lista de letras aleatórias 
-        token = ''.join(choices(string.ascii_lowercase, k=10))
+        # token = ''.join(choices(string.ascii_lowercase, k=10))
+
+        token = genenrate_token(email)
 
         return LoginUser(token=token)

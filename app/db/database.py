@@ -3,6 +3,8 @@ from sqlalchemy.orm import sessionmaker
 from app.db.models import Base, Employer, Job, User, JobApplication
 from app.settings.config import DB_URL
 from app.db.data import jobs_data, employers_data, users_data, applications_data
+from app.utils import hash_password
+
 
 
 engine = create_engine(DB_URL, echo=True)
@@ -31,6 +33,9 @@ def prepare_database():
         session.add(Job(**job))
     
     for user in users_data:
+       
+        user["password_hash"] = hash_password(user['password'])
+        del user['password']
         session.add(User(**user))
     
     for apl in applications_data:
