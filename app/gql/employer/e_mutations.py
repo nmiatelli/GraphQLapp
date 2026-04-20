@@ -3,6 +3,11 @@ from app.gql.gql_types import EmployerObject
 from app.db.database import Session
 from app.db.models import  Employer
 
+from app.settings.utils import get_authenticated_user
+
+
+
+
 
 class AddEmployer(Mutation):
     class Arguments:
@@ -12,15 +17,24 @@ class AddEmployer(Mutation):
 
     employer = Field(lambda: EmployerObject) 
 
+    #temp
+    authenticated_as = Field(String)
+
     @staticmethod
     def mutate(root, info, name, contact_email, industry):
+        user = get_authenticated_user(info.context)
+
         session = Session() 
         employer = Employer(name=name, contact_email=contact_email, industry=industry)
         session.add(employer)
         session.commit()
         session.refresh(employer)
+
         session.close()
-        return AddEmployer(employer=employer)
+        # return AddEmployer(employer=employer)
+
+        #temp
+        return AddEmployer(employer=employer, authenticated_as=user.email)
     
 class UpdateEmployer(Mutation):
     class Arguments:

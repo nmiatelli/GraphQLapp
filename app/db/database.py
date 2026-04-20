@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from app.db.models import Base, Employer, Job, User, JobApplication
 from app.settings.config import DB_URL
 from app.db.data import jobs_data, employers_data, users_data, applications_data
-from app.utils import hash_password
+
 
 
 
@@ -16,7 +16,7 @@ Session = sessionmaker(bind=engine)
 
 # Sempre que reiniciar o servidor ele deleta tudo e cria de novo (ambiente de dev)
 def prepare_database():
-    
+    from app.settings.utils import hash_password
     Base.metadata.drop_all(engine)
     # Cria efetivamente as tabelas no banco
     Base.metadata.create_all(engine)

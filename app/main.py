@@ -38,6 +38,7 @@ def get_jobs():
 
 app.add_route("/graphql", GraphQLApp(
     schema=schema,
-    on_get=make_playground_handler()    
+    on_get=make_playground_handler(),
+    context_value=lambda request: {"request": request}
 ))
 
