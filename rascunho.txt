@@ -108,6 +108,21 @@ mutation{
         authenticatedAs
     }
 }
+mutation{
+    addUser(
+        username: "new_user",
+        email: "user@email.com",
+        password: "password123",
+        role: "user"
+    ) {
+        user{
+            id
+            username
+            email
+            role
+        }            
+    }
+}
 
 mutation{
     updateEmployer(

@@ -4,11 +4,10 @@ from app.settings.config import TOKEN_EXPIRATION_TIME, ALGORITHM, SECRET_KEY
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from graphql import GraphQLError
-from datetime import datetime, timezone
 from fastapi import Request
 from app.db.database import Session
-from app.db.models import  Employer, User
-import jwt
+from app.db.models import User
+from functools import wraps
 
 
 def generate_token(email):
@@ -66,3 +65,17 @@ def verify_password(pwd_hash, pwd):
         raise GraphQLError("Invalid password")
     
 
+
+def admin_user(func):
+    
+    @wraps(func)
+    def wrapper(*args, **kargs):
+        info = args[1]
+        user = get_authenticated_user(info.context)
+
+        if user.role != "admin":
+            raise GraphQLError("You are not authorized to perform this action")
+        
+        return func(*args, **kargs)
+    
+    return wrapper
