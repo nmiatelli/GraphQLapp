@@ -136,3 +136,12 @@ fragment employerFields on EmployerObject{
 fragment jobFields on JobObject{
     title description employerId
 }
+
+mutation{
+    loginUser(
+        email:"iamchris@email.com,
+        password:"a1234a"        
+    ){
+        token
+    }
+}
