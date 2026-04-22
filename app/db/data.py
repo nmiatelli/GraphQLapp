@@ -10,7 +10,7 @@ jobs_data = [
     {"title": "Data Analyst", "description": "Analyze data and create reports", "employer_id": 1},
     {"title": "Technical Accountant", "description": "Manage financial records", "employer_id": 2},
     { "title": "Manager", "description": "Manage people who manage records", "employer_id": 2},
-    # {"title": "Jr Developer", "description": "Develop small pieces of software", "employer_id": 1},
+  
 ]
 
 users_data = [

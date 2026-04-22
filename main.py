@@ -36,7 +36,7 @@ def get_jobs():
     with Session() as session:
         return session.query(Job).all()
 
-app.add_route("/graphql", GraphQLApp(
+app.add_route("/", GraphQLApp(
     schema=schema,
     on_get=make_playground_handler(),
     context_value=lambda request: {"request": request}

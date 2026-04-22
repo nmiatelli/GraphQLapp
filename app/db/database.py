@@ -1,13 +1,17 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app.db.models import Base, Employer, Job, User, JobApplication
-from app.settings.config import DB_URL
 from app.db.data import jobs_data, employers_data, users_data, applications_data
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DB_URL = os.getenv("DB_URL")
 
 
 
-
-engine = create_engine(DB_URL, echo=True)
+engine = create_engine(DB_URL, echo=False)
 conn = engine.connect()
 
 # "segura" todos os dados antes de enviar/deletar no banco

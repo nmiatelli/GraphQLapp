@@ -1,6 +1,5 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from app.settings.config import TOKEN_EXPIRATION_TIME, ALGORITHM, SECRET_KEY
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 from graphql import GraphQLError
@@ -8,7 +7,14 @@ from fastapi import Request
 from app.db.database import Session
 from app.db.models import User
 from functools import wraps
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
+
+TOKEN_EXPIRATION_TIME = int(os.getenv("TOKEN_EXPIRATION_TIME"))
+ALGORITHM = os.getenv("ALGORITHM")
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 def generate_token(email):
     #  now + toke lifespan
@@ -34,7 +40,7 @@ def get_authenticated_user(context):
     if auth_header and token[0] == "Bearer" and len(token) == 2:      
 
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(token[1], SECRET_KEY, algorithms=[ALGORITHM])
             
             if datetime.now(timezone.utc) > datetime.fromtimestamp(payload['exp'], tz=timezone.utc):
                 raise GraphQLError("Toke has expired")
