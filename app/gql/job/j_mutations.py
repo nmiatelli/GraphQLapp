@@ -5,6 +5,7 @@ from app.gql.gql_types import JobObject
 from app.db.database import Session
 from app.db.models import Job
 
+from app.settings.utils import admin_user
 
 class AddJob(Mutation):
     class Arguments:
@@ -14,7 +15,7 @@ class AddJob(Mutation):
 
     job = Field(lambda: JobObject)
 
-    @staticmethod
+    @admin_user
     def mutate(root, info, title, description, employer_id):
         # new instace of job
         job = Job(title=title, description=description, employer_id=employer_id)
@@ -35,7 +36,7 @@ class UpdateJob(Mutation):
     
     job = Field(lambda: JobObject)
 
-    @staticmethod
+    @admin_user
     def mutate(root, info, job_id, title=None, description=None, employer_id=None):
         session = Session()
 
@@ -71,7 +72,7 @@ class DeleteJob(Mutation):
 
     success = Boolean()
 
-    @staticmethod
+    @admin_user
     def mutate(root, info, id):
         session = Session()
         job = session.query(Job).filter(Job.id == id).first()

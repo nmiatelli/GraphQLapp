@@ -22,15 +22,16 @@ def generate_token(email):
     token = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
     return token
 
-
 def get_authenticated_user(context):
 
     request_object: Request = context.get('request')
     auth_header = request_object.headers.get('Authorization')
     
-
+    token =[None]
     if auth_header:
-        token = auth_header.split(" ")[1]
+        token = auth_header.split(" ")
+
+    if auth_header and token[0] == "Bearer" and len(token) == 2:      
 
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -45,11 +46,15 @@ def get_authenticated_user(context):
                 raise GraphQLError("Could not authenticate user")
             
             return user
-        except jwt.exceptions.InvalidSignatureError:
+        except jwt.exceptions.PyJWTError:
             raise GraphQLError("Invalid authentication token")
+         # sera lancado quando nao for um erro relacionado ao JWT
+        except Exception as e:
+            raise GraphQLError("Could not authenticate user")
+    
     else:
         raise GraphQLError("Missing Authentication Token")
-
+    
 
 def hash_password(pwd):
      # converte o plain text de password que está no dic de dados, armazena, e deleta o plain text posteriormente
@@ -64,18 +69,42 @@ def verify_password(pwd_hash, pwd):
     except VerifyMismatchError:
         raise GraphQLError("Invalid password")
     
-
-
 def admin_user(func):
+
     
     @wraps(func)
-    def wrapper(*args, **kargs):
+    def wrapper(*args, **kwargs):
         info = args[1]
         user = get_authenticated_user(info.context)
 
         if user.role != "admin":
             raise GraphQLError("You are not authorized to perform this action")
         
-        return func(*args, **kargs)
+        return func(*args, **kwargs)
+    
+    return wrapper
+
+def authd_user(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        info = args[1]
+        get_authenticated_user(info.context)
+        return func(*args, **kwargs)
+    
+    return wrapper
+
+def authd_user_same_as(func):
+
+    
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        info = args[1]
+        user = get_authenticated_user(info.context)
+        uid = kwargs.get("user_id")
+
+        if user.id != uid:
+            raise GraphQLError("You are not authorized to perform this action")
+        
+        return func(*args, **kwargs)
     
     return wrapper
