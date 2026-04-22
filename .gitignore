@@ -1,2 +1,15 @@
-app/.env
-**/__pycache__/
+# Ambiente virtual
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Variáveis sensíveis
+.env
+
+# VSCode
+.vscode/
+
+# Banco local
+*.db
